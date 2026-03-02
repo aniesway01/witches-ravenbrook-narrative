@@ -6,22 +6,27 @@
 <title>鴉溪的女巫們 — 互動敘事地圖</title>
 <style>
 :root {
-  --bg: #0f0f1a;
-  --bg2: #161625;
-  --bg3: #1e1e32;
-  --text: #e8e8f0;
-  --text2: #8888a0;
-  --text3: #555570;
-  --accent: #4f46e5;
-  --accent2: #533483;
-  --accent-glow: #4f46e522;
-  --border: #2a2a42;
-  --card: #1a1a2e;
-  --card-hover: #1e1e36;
-  --tag-bg: rgba(74,153,153,0.15);
-  --tag-text: #5db8b8;
-  --success: #4ade80;
+  --bg: #0a0810;
+  --bg2: #110e18;
+  --bg3: #1a1525;
+  --text: #ddd5e8;
+  --text2: #8878a0;
+  --text3: #504068;
+  --accent: #9b59b6;
+  --accent2: #c0392b;
+  --accent-glow: rgba(155,89,182,0.15);
+  --accent2-glow: rgba(192,57,43,0.15);
+  --border: #221a30;
+  --card: #0e0b15;
+  --card-hover: #15101f;
+  --warm: #d4a035;
+  --tag-char: #c084fc;
+  --tag-loc: #a78bfa;
+  --tag-action: #e08050;
+  --tag-cond: #6366f1;
+  --tag-default: rgba(221,213,232,0.08);
   --radius: 10px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.5);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -34,9 +39,9 @@ body {
 }
 .app { display: flex; height: 100vh; flex-direction: column; }
 
-/* === Game Header Banner === */
+/* === Game Banner === */
 .game-banner {
-  background: linear-gradient(135deg, var(--accent2) 0%, var(--bg3) 50%, var(--bg2) 100%);
+  background: linear-gradient(135deg, #0a0510 0%, #1a0e28 40%, #200a18 70%, #0e0810 100%);
   padding: 20px 24px 16px;
   border-bottom: 1px solid var(--border);
   position: relative;
@@ -45,52 +50,70 @@ body {
 .game-banner::before {
   content: '';
   position: absolute;
-  top: 0; right: 0;
-  width: 300px; height: 100%;
-  background: radial-gradient(ellipse at 80% 50%, var(--accent-glow), transparent 70%);
+  top: -60%; right: -5%;
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(155,89,182,0.07), transparent 60%);
   pointer-events: none;
 }
-.game-banner h1 {
-  font-size: 26px;
+.game-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -70%; left: 10%;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(192,57,43,0.05), transparent 60%);
+  pointer-events: none;
+}
+.banner-top { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; }
+.banner-icon {
+  width: 54px; height: 54px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2a1040, #401030);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 20px rgba(155,89,182,0.25), inset 0 0 20px rgba(192,57,43,0.1);
+  border: 1px solid rgba(155,89,182,0.2);
+}
+.banner-text h1 {
+  font-size: 24px;
   font-weight: 700;
-  color: #fff;
-  letter-spacing: 1px;
-  margin-bottom: 2px;
+  color: #e8d8f0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 30px rgba(155,89,182,0.2);
 }
-.game-banner .subtitle {
-  font-size: 13px;
-  color: rgba(255,255,255,0.45);
-  font-style: italic;
-  margin-bottom: 8px;
-}
-.game-banner .banner-stats {
-  display: flex;
-  gap: 16px;
+.banner-text .subtitle {
   font-size: 12px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(221,213,232,0.4);
+  margin-top: 2px;
+  font-style: italic;
 }
-.game-banner .banner-stats .stat-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.banner-stats {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(221,213,232,0.45);
+  position: relative; z-index: 1;
 }
-.game-banner .banner-stats b { color: var(--accent); }
-.translation-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 600;
+.stat-item { display: flex; align-items: center; gap: 4px; }
+.stat-item b { color: var(--accent); }
+.char-avatars {
+  display: flex; gap: 4px; margin-left: auto;
+  position: relative; z-index: 1;
+  flex-wrap: wrap;
 }
-.translation-badge.full {
-  background: rgba(74,222,128,0.15);
-  color: var(--success);
+.char-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  color: #fff;
+  border: 2px solid rgba(221,213,232,0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.translation-badge.partial {
-  background: rgba(251,191,36,0.15);
-  color: #fbbf24;
+.char-avatar:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 12px rgba(155,89,182,0.3);
 }
 
 /* === Toolbar === */
@@ -103,18 +126,26 @@ body {
   gap: 10px;
   flex-wrap: wrap;
 }
+.search-wrap { position: relative; flex-shrink: 1; min-width: 140px; }
+.search-wrap::before {
+  content: '\1F50D';
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  pointer-events: none; z-index: 1;
+}
 .search-box {
-  padding: 6px 14px;
+  padding: 6px 14px 6px 32px;
   border-radius: 20px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
   font-size: 13px;
-  width: 220px;
-  flex-shrink: 1;
-  min-width: 140px;
+  width: 240px;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+.search-wrap .search-box { width: 100%; }
 .search-box:focus {
   outline: none;
   border-color: var(--accent);
@@ -125,114 +156,125 @@ body {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 .toggle-row {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
+  gap: 4px;
+  font-size: 11px;
   color: var(--text2);
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
 }
-.toggle-row input { accent-color: var(--accent); cursor: pointer; }
+.toggle-row input { accent-color: var(--accent); cursor: pointer; width: 14px; height: 14px; }
 .toggle-row:hover { color: var(--text); }
-.view-toggle { display: flex; gap: 4px; }
+.view-toggle { display: flex; gap: 3px; }
 .view-btn {
-  padding: 5px 14px;
+  padding: 5px 12px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text2);
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 .view-btn:hover { background: var(--bg3); color: var(--text); }
 .view-btn.active {
-  background: var(--accent2);
+  background: var(--accent);
   color: #fff;
-  border-color: var(--accent2);
-  box-shadow: 0 2px 8px rgba(83,52,131,0.3);
+  border-color: var(--accent);
+  box-shadow: 0 2px 10px rgba(155,89,182,0.3);
+}
+.filter-row { display: flex; gap: 4px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 3px 10px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.filter-chip:hover { border-color: var(--text2); color: var(--text); }
+.filter-chip.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
-/* === Content Area === */
+/* === Content === */
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 20px 40px;
+  padding: 16px 20px 60px;
   scroll-behavior: smooth;
 }
 
 /* === Group Headers === */
 .group-header {
   width: 100%;
-  background: linear-gradient(135deg, var(--accent2), var(--bg3));
+  background: linear-gradient(135deg, var(--bg3), var(--bg2));
   padding: 14px 20px;
-  margin: 20px 0 6px 0;
+  margin: 16px 0 4px 0;
   border-radius: var(--radius);
   position: sticky;
-  top: 0;
-  z-index: 10;
+  top: 0; z-index: 10;
   cursor: pointer;
   user-select: none;
   display: flex;
   align-items: center;
   gap: 12px;
-  transition: transform 0.1s;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s;
 }
 .group-header:first-child { margin-top: 0; }
-.group-header:active { transform: scale(0.995); }
+.group-header:hover { border-color: var(--accent); }
+.group-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
 .group-arrow {
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
+  font-size: 10px;
+  color: var(--text3);
   transition: transform 0.2s;
   flex-shrink: 0;
 }
 .group-arrow.open { transform: rotate(90deg); }
 .group-info { flex: 1; min-width: 0; }
 .group-header h2 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
-  border: none;
-  padding: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 16px; font-weight: 600; color: #e0d0ee;
+  margin: 0; border: none; padding: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .group-header .group-name-en {
-  font-size: 11px;
-  color: rgba(255,255,255,0.35);
-  font-style: italic;
-  margin-top: 1px;
+  font-size: 11px; color: var(--text3); margin-top: 1px;
 }
 .group-header .group-stats {
-  font-size: 12px;
-  color: rgba(255,255,255,0.45);
-  flex-shrink: 0;
+  font-size: 11px; color: var(--text2); flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
 }
 .group-header .group-stats b { color: var(--accent); }
-
-/* === Group Body === */
-.group-body {
-  display: none;
-  padding: 2px 0;
-}
+.group-body { display: none; padding: 2px 0; }
 .group-body.open { display: block; }
 
 /* === Passage Cards === */
 .passage {
   background: var(--card);
   padding: 14px 18px;
-  margin: 5px 0;
+  margin: 4px 0;
   border-radius: 8px;
   border-left: 3px solid transparent;
-  transition: border-color 0.2s, background 0.15s;
+  transition: all 0.2s;
   position: relative;
 }
 .passage:hover {
@@ -241,57 +283,60 @@ body {
 }
 .passage-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .passage-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 13px; font-weight: 600;
   color: var(--accent);
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .passage .pid {
-  font-size: 10px;
-  color: var(--text3);
-  font-family: 'Consolas', monospace;
-  flex-shrink: 0;
+  font-size: 10px; color: var(--text3);
+  font-family: 'Consolas', monospace; flex-shrink: 0;
 }
 .passage .pname {
-  font-size: 11px;
-  color: var(--tag-text);
-  margin-bottom: 4px;
-  font-family: monospace;
+  font-size: 11px; color: var(--accent2);
+  margin-bottom: 4px; font-family: monospace;
 }
+.passage .tag-row { margin-bottom: 6px; display: flex; flex-wrap: wrap; gap: 3px; }
+.passage .tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 500;
+}
+.tag-char { background: rgba(192,132,252,0.1); color: var(--tag-char); }
+.tag-loc { background: rgba(167,139,250,0.1); color: var(--tag-loc); }
+.tag-action { background: rgba(224,128,80,0.1); color: var(--tag-action); }
+.tag-cond { background: rgba(99,102,241,0.1); color: var(--tag-cond); }
+.tag-default { background: var(--tag-default); color: var(--text2); }
+.char-pills { margin-bottom: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
+.char-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px; font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.char-pill:hover { transform: scale(1.05); }
 .passage .text {
-  font-size: 14.5px;
-  line-height: 1.85;
+  font-size: 14px; line-height: 1.85;
   color: var(--text);
-  white-space: pre-wrap;
-  word-break: break-word;
+  white-space: pre-wrap; word-break: break-word;
 }
-.passage-img {
-  max-width: 100%;
-  max-height: 400px;
-  border-radius: 8px;
-  margin: 8px 0;
-  display: block;
-}
+.passage .text p { margin-bottom: 0.5em; }
 .passage .text-en {
-  font-size: 12px;
-  color: var(--text2);
-  margin-top: 8px;
-  padding-top: 8px;
+  font-size: 12px; color: var(--text2);
+  margin-top: 8px; padding-top: 8px;
   border-top: 1px dashed var(--border);
-  font-style: italic;
-  line-height: 1.6;
+  font-style: italic; line-height: 1.6;
   white-space: pre-wrap;
-  max-height: 150px;
-  overflow: hidden;
+  max-height: 120px; overflow: hidden;
   position: relative;
 }
 .passage .text-en.collapsed::after {
@@ -302,32 +347,63 @@ body {
   background: linear-gradient(transparent, var(--card));
   pointer-events: none;
 }
-.passage .tag-row { margin-bottom: 6px; }
-.passage .tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 10px;
-  background: var(--tag-bg);
-  color: var(--tag-text);
-  font-size: 11px;
-  margin-right: 4px;
-  margin-bottom: 2px;
+.passage .choices-row {
+  margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; gap: 4px;
 }
-.passage-num {
+.choice-btn {
+  padding: 3px 10px;
+  border-radius: 14px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(155,89,182,0.25);
+  color: var(--accent);
+  font-size: 11px;
+  cursor: default;
+}
+.cond-block {
+  margin: 8px 0 4px 0;
+  padding: 4px 8px;
+  border-left: 2px solid var(--tag-cond);
+  background: rgba(99,102,241,0.05);
+  border-radius: 0 4px 4px 0;
+}
+.cond-label {
   font-size: 10px;
-  color: var(--text3);
-  font-family: monospace;
-  position: absolute;
-  top: 14px;
-  right: 16px;
+  color: var(--tag-cond);
+  font-family: 'Consolas', monospace;
 }
 
-/* === Empty / Loading States === */
-.loading {
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--text2);
+/* === Character View === */
+.char-section {
+  margin: 6px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
+.char-section-header {
+  padding: 14px 18px;
+  background: var(--bg2);
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; user-select: none;
+  transition: background 0.15s;
+}
+.char-section-header:hover { background: var(--bg3); }
+.char-section-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.char-section-info { flex: 1; min-width: 0; }
+.char-section-info h3 { font-size: 16px; font-weight: 600; color: #e0d0ee; }
+.char-section-info .meta { font-size: 12px; color: var(--text2); }
+.char-section-body { display: none; }
+.char-section-body.open { display: block; padding: 4px 8px 8px; }
+
+/* === States === */
+.loading { text-align: center; padding: 80px 20px; color: var(--text2); }
 .loading .spinner {
   display: inline-block;
   width: 36px; height: 36px;
@@ -338,128 +414,219 @@ body {
   margin-bottom: 16px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text2);
-  font-size: 14px;
-}
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text2); font-size: 14px; }
 
 /* === Scrollbar === */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* === Keyboard hint === */
+.kb-hint {
+  position: fixed; bottom: 12px; right: 16px;
+  font-size: 10px; color: var(--text3);
+  pointer-events: none; z-index: 100;
+}
+.kb-hint kbd {
+  padding: 1px 4px; border-radius: 3px;
+  background: var(--bg2); border: 1px solid var(--border);
+  font-family: inherit;
+}
 
 /* === Mobile === */
 @media (max-width: 768px) {
   .game-banner { padding: 16px; }
-  .game-banner h1 { font-size: 22px; }
-  .content { padding: 12px; }
+  .banner-top h1 { font-size: 20px; }
+  .char-avatars { display: none; }
+  .content { padding: 10px 12px 40px; }
   .passage .text { font-size: 15px; line-height: 1.9; }
   .toolbar { padding: 6px 10px; gap: 6px; }
+  .search-wrap { width: 100%; }
   .search-box { width: 100%; }
   .toolbar-right { margin-left: 0; width: 100%; flex-wrap: wrap; justify-content: center; }
   .view-toggle { width: 100%; justify-content: center; }
-  .group-header { padding: 12px 14px; }
-  .group-header h2 { font-size: 16px; }
+  .filter-row { width: 100%; justify-content: center; }
+  .group-header { padding: 10px 14px; }
+  .group-header h2 { font-size: 15px; }
+  .kb-hint { display: none; }
 }
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- Game Banner -->
   <div class="game-banner">
-    <h1 id="gameTitle">載入中...</h1>
-    <div class="subtitle" id="gameSubtitle"></div>
+    <div class="banner-top">
+      <div class="banner-icon">&#x1F9D9;</div>
+      <div class="banner-text">
+        <h1 id="gameTitle">&#40201;&#28330;&#30340;&#22899;&#24043;&#20497;</h1>
+        <div class="subtitle" id="gameSubtitle">Witches of Ravenbrook &#x2014; Twine &#20114;&#21205;&#25944;&#20107; | &#22855;&#24187;&#20882;&#38570;</div>
+      </div>
+      <div class="char-avatars" id="charAvatars"></div>
+    </div>
     <div class="banner-stats" id="bannerStats"></div>
   </div>
 
-  <!-- Toolbar -->
   <div class="toolbar">
-    <input type="text" class="search-box" id="searchBox" placeholder="搜尋段落內容...">
+    <div class="search-wrap">
+      <input type="text" class="search-box" id="searchBox" placeholder="&#25628;&#23563;&#27573;&#33853;&#12289;&#35282;&#33394;&#12289;&#22580;&#26223;...">
+    </div>
     <div class="toolbar-right">
       <label class="toggle-row">
         <input type="checkbox" id="showZh" checked>
-        <span>中文</span>
+        <span>&#20013;&#25991;</span>
       </label>
       <label class="toggle-row">
         <input type="checkbox" id="showEn">
-        <span>英文原文</span>
+        <span>&#33521;&#25991;</span>
       </label>
       <label class="toggle-row">
-        <input type="checkbox" id="showName">
-        <span>段落 ID</span>
+        <input type="checkbox" id="showChoices" checked>
+        <span>&#36984;&#38917;</span>
+      </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="showCond">
+        <span>&#26781;&#20214;</span>
       </label>
       <div class="view-toggle">
-        <button class="view-btn active" data-view="group" id="viewGroup">按分類</button>
-        <button class="view-btn" data-view="all" id="viewAll">全部段落</button>
+        <button class="view-btn active" data-view="narrative" id="viewNarrative">&#25944;&#20107;</button>
+        <button class="view-btn" data-view="scene" id="viewScene">&#22580;&#26223;</button>
+        <button class="view-btn" data-view="character" id="viewChar">&#35282;&#33394;</button>
       </div>
     </div>
   </div>
 
-  <!-- Content -->
+  <div id="filterBar" class="toolbar" style="display:none; padding:4px 16px; border-top:none;">
+    <div class="filter-row" id="filterRow"></div>
+  </div>
+
   <div class="content" id="content">
     <div class="loading">
       <div class="spinner"></div>
-      <div>載入敘事數據中...</div>
+      <div>&#36617;&#20837;&#25944;&#20107;&#25976;&#25818;&#20013;...</div>
     </div>
   </div>
 </div>
 
-<script>
-// === Config (injected by build script) ===
-const GAME_CONFIG = {"title": "Witches of Ravenbrook", "title_zh": "鴉溪的女巫們", "color_accent": "#4f46e5", "engine": ""};
+<div class="kb-hint">
+  <kbd>/</kbd> &#25628;&#23563; &nbsp; <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> &#20999;&#25563;&#35222;&#22294; &nbsp; <kbd>Esc</kbd> &#28165;&#38500;
+</div>
 
-// === State ===
+<script>
+// ============================================================
+// Witches of Ravenbrook - Enhanced Narrative Viewer
+// Dark witchcraft / fantasy theme
+// ============================================================
+
+const CHUNK_SIZE = 60;
+
+const CHAR_COLORS = {
+  'Mei': '#ec4899',
+  'Christine': '#8b5cf6',
+  'Florentina': '#22c55e',
+  'Sanya': '#ef4444',
+  'Sophie': '#f59e0b',
+  'Izuna': '#f97316',
+  'Chris': '#7c3aed',
+  'Empress': '#dc2626',
+  'Alraune': '#10b981'
+};
+
+const CHAR_LIST = ['Mei','Christine','Florentina','Sanya','Sophie','Izuna','Chris','Empress','Alraune'];
+
+const GROUP_ICONS = {
+  'Chapter 1 \u2014 Scenes':    ['#ec4899', '\u{1F331}'],
+  'Chapter 1 \u2014 Dialogues': ['#ec4899', '\u{1F4AC}'],
+  'Chapter 2 \u2014 Scenes':    ['#ef4444', '\u{2694}'],
+  'Chapter 2 \u2014 Dialogues': ['#ef4444', '\u{1F4AC}'],
+  'Chapter 5 \u2014 Scenes':    ['#8b5cf6', '\u{2699}'],
+  'Chapter 5 \u2014 Dialogues': ['#8b5cf6', '\u{1F4AC}'],
+  'Chapter H \u2014 Scenes':    ['#c0392b', '\u{1F525}'],
+  'Campfire Topics':             ['#f59e0b', '\u{1F525}'],
+  'Chapter Select':              ['#6366f1', '\u{1F4D6}'],
+  'Game Systems':                ['#64748b', '\u{2699}'],
+  'Overview':                    ['#9b59b6', '\u{1F5FA}'],
+  'Resting Dialogues':           ['#14b8a6', '\u{1F4AC}']
+};
+
 let DATA = null;
 let searchQuery = '';
 let showZh = true;
 let showEn = false;
-let showName = false;
-let currentView = 'group';
-let openGroups = new Set();
+let showChoices = true;
+let showCond = false;
+let currentView = 'narrative';
+let openSections = new Set();
+let charFilter = null;
 
-// === Data Loading ===
 async function loadData() {
-  const resp = await fetch('data/passages.json?v=' + Date.now());
-  DATA = await resp.json();
-  if (!DATA.meta.has_zh) {
-    document.getElementById('showZh').parentElement.style.display = 'none';
-    showZh = false;
-    showEn = true;
-    document.getElementById('showEn').checked = true;
+  try {
+    const resp = await fetch('data/passages.json?v=' + Date.now());
+    DATA = await resp.json();
+    if (!DATA.meta.has_zh) {
+      document.getElementById('showZh').parentElement.style.display = 'none';
+      showZh = false;
+      showEn = true;
+      document.getElementById('showEn').checked = true;
+    }
+    detectCharacters();
+    init();
+  } catch(e) {
+    document.getElementById('content').innerHTML =
+      '<div class="empty-state">\u8F09\u5165\u5931\u6557: ' + e.message + '</div>';
   }
-  init();
 }
 
-// === Banner ===
+function detectCharacters() {
+  const charCounts = {};
+  DATA.passages.forEach(p => {
+    const text = (p.content || '') + ' ' + (p.name || '');
+    CHAR_LIST.forEach(name => {
+      const re = new RegExp('\\b' + name + '\\b');
+      if (re.test(text)) {
+        charCounts[name] = (charCounts[name] || 0) + 1;
+      }
+    });
+    if (!p.characters || p.characters.length === 0) {
+      const found = [];
+      CHAR_LIST.forEach(name => {
+        const re = new RegExp('\\b' + name + '\\b');
+        if (re.test(text)) found.push(name);
+      });
+      if (found.length > 0) p.characters = found;
+    }
+  });
+  DATA.meta.characters = Object.entries(charCounts)
+    .sort((a,b) => b[1] - a[1])
+    .map(e => e[0]);
+}
+
 function renderBanner() {
   const m = DATA.meta;
-  const titleZh = m.title_zh || m.title || '';
-  const titleEn = m.title || '';
-  document.getElementById('gameTitle').textContent = titleZh;
-  document.getElementById('gameSubtitle').textContent = titleZh !== titleEn ? titleEn : '';
-  document.title = titleZh + ' — 互動敘事地圖';
-
   const total = m.total || DATA.passages.length;
+  const chars = m.characters || [];
+  const groups = (DATA.groups || []).length;
   const zhCount = m.translated_count || DATA.passages.filter(p => p.content_zh).length;
-  const groupCount = (DATA.groups || []).length;
   const pct = total > 0 ? Math.round(zhCount / total * 100) : 0;
 
-  let badgeClass = pct >= 95 ? 'full' : 'partial';
-  let badgeText = pct >= 95 ? '✓ 翻譯完成' : `${pct}% 已翻譯`;
+  document.getElementById('bannerStats').innerHTML =
+    '<span class="stat-item"><b>' + groups + '</b> \u5206\u985E</span>' +
+    '<span class="stat-item"><b>' + total.toLocaleString() + '</b> \u6BB5\u843D</span>' +
+    '<span class="stat-item"><b>' + chars.length + '</b> \u89D2\u8272</span>' +
+    '<span class="stat-item" style="color:' + (pct>=95?'#22c55e':'#d4a035') + '">' + pct + '% \u5DF2\u7FFB\u8B6F</span>';
 
-  document.getElementById('bannerStats').innerHTML = `
-    <span class="stat-item"><b>${groupCount}</b> 分類</span>
-    <span class="stat-item"><b>${total}</b> 段落</span>
-    <span class="translation-badge ${badgeClass}">${badgeText}</span>
-  `;
+  const avatarBox = document.getElementById('charAvatars');
+  avatarBox.innerHTML = chars.slice(0, 10).map(c => {
+    const color = CHAR_COLORS[c] || '#64748b';
+    return '<div class="char-avatar" style="background:' + color + '" title="' + c + '" onclick="filterByChar(\'' + c + '\')">' + c[0] + '</div>';
+  }).join('');
 }
 
-// === Filtering ===
 function getFiltered() {
   let passages = DATA.passages;
+  if (charFilter) {
+    passages = passages.filter(p => (p.characters || []).includes(charFilter));
+  }
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
     passages = passages.filter(p =>
@@ -467,294 +634,439 @@ function getFiltered() {
       (p.content || '').toLowerCase().includes(q) ||
       (p.name || '').toLowerCase().includes(q) ||
       (p.group || '').toLowerCase().includes(q) ||
-      (p.group_zh || '').includes(q)
+      (p.characters || []).some(c => c.toLowerCase().includes(q))
     );
   }
   return passages;
 }
 
-// === Auto Title ===
-function getPassageTitle(p) {
-  // If passage has a meaningful title (not just an ID like "g7" or "passage_12")
-  const name = p.name || '';
-  if (name && !/^(g\d|passage_|p\d|#|\d+$)/.test(name) && name.length > 2 && name.length < 80) {
-    return name;
-  }
-  // Extract first sentence from Chinese content
-  if (p.content_zh) {
-    const first = p.content_zh.split(/[。！？\n]/)[0];
-    if (first && first.length > 4) {
-      return first.length > 60 ? first.substring(0, 57) + '...' : first;
-    }
-  }
-  // Extract from English content
-  if (p.content) {
-    const first = p.content.split(/[.!?\n]/)[0];
-    if (first && first.length > 4) {
-      return first.length > 60 ? first.substring(0, 57) + '...' : first;
-    }
-  }
-  return name || `段落 ${p.pid}`;
+function filterByChar(name) {
+  charFilter = charFilter === name ? null : name;
+  updateFilterBar();
+  resetAndRender();
 }
 
-// === Passage HTML ===
-function passageHtml(p, idx) {
-  const title = getPassageTitle(p);
-  const pid = p.pid != null ? `<span class="pid">#${p.pid}</span>` : '';
-  const pname = showName && p.name ? `<div class="pname">${escHtml(p.name)}</div>` : '';
-  const tags = (p.tags && p.tags.length > 0)
-    ? `<div class="tag-row">${p.tags.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}</div>`
-    : '';
+function updateFilterBar() {
+  const bar = document.getElementById('filterBar');
+  const row = document.getElementById('filterRow');
+  if (currentView === 'character' || charFilter) {
+    bar.style.display = 'flex';
+    const chars = DATA.meta.characters || [];
+    row.innerHTML = chars.map(c => {
+      const color = CHAR_COLORS[c] || '#64748b';
+      const active = charFilter === c ? ' active' : '';
+      return '<button class="filter-chip' + active + '" style="' + (charFilter===c ? 'background:'+color+'22;border-color:'+color+';color:'+color : '') + '" onclick="filterByChar(\'' + c + '\')">' + c + '</button>';
+    }).join('') + (charFilter ? '<button class="filter-chip" style="color:var(--warm)" onclick="charFilter=null;updateFilterBar();resetAndRender();">\u6E05\u9664</button>' : '');
+  } else {
+    bar.style.display = 'none';
+  }
+}
 
-  let textHtml = '';
-  if (showZh && p.content_zh) {
-    textHtml += `<div class="text">${formatText(p.content_zh)}</div>`;
+function getPassageTitle(p) {
+  const name = p.name || '';
+  if (name && !/^(g\d|passage_|p\d|#|\d+$)/.test(name) && name.length > 2 && name.length < 80) return name;
+  if (p.content_zh) {
+    const first = p.content_zh.replace(/\[.*?\]/g, '').replace(/<<[^>]*?>>/g, '').split(/[\u3002\uFF01\uFF1F\n]/)[0].trim();
+    if (first.length > 4) return first.length > 50 ? first.substring(0, 47) + '...' : first;
   }
-  if (showEn && p.content) {
-    if (showZh && p.content_zh) {
-      const isLong = p.content.length > 300;
-      textHtml += `<div class="text-en${isLong ? ' collapsed' : ''}">${formatText(p.content)}</div>`;
-    } else {
-      textHtml += `<div class="text">${formatText(p.content)}</div>`;
-    }
+  if (p.content) {
+    const first = p.content.replace(/\[.*?\]/g, '').replace(/<<[^>]*?>>/g, '').split(/[.!?\n]/)[0].trim();
+    if (first.length > 4) return first.length > 50 ? first.substring(0, 47) + '...' : first;
   }
-  if (!textHtml) {
-    if (p.content_zh) {
-      textHtml = `<div class="text">${formatText(p.content_zh)}</div>`;
-    } else if (p.content) {
-      textHtml = `<div class="text">${formatText(p.content)}</div>`;
-    } else {
-      textHtml = `<div class="text" style="color:var(--text3)">（無內容）</div>`;
-    }
-  }
+  return name || 'Passage ' + p.pid;
+}
 
-  return `<div class="passage">
-    <div class="passage-header">
-      <span class="passage-title">${escHtml(title)}</span>
-      ${pid}
-    </div>
-    ${pname}${tags}${textHtml}
-  </div>`;
+function extractConditions(text) {
+  if (!text) return [];
+  const conds = [];
+  const re = /<<(?:else)?if\s+([^>]+?)>>/g;
+  let m;
+  while ((m = re.exec(text)) !== null) { conds.push(m[1].trim()); }
+  return conds;
+}
+
+function tagClass(tag) {
+  const t = (tag || '').toLowerCase();
+  if (t.includes('scene') || t.includes('location')) return 'tag-loc';
+  if (t.includes('dialogue') || t.includes('conversation')) return 'tag-char';
+  if (t.includes('system') || t.includes('mechanic')) return 'tag-action';
+  if (t.includes('narrative') || t.includes('summary')) return 'tag-cond';
+  return 'tag-default';
 }
 
 function formatText(s) {
   if (!s) return '';
-  // Extract <img> tags before escaping, replace with placeholders
-  const imgs = [];
-  let safe = s.replace(/<img\s[^>]*>/gi, m => {
-    const i = imgs.length;
-    // Ensure class and lazy loading
-    let tag = m;
-    if (!/class=/.test(tag)) tag = tag.replace('<img', '<img class="passage-img"');
-    if (!/loading=/.test(tag)) tag = tag.replace('<img', '<img loading="lazy"');
-    imgs.push(tag);
-    return ' IMG' + i + ' ';
-  });
-  // Escape remaining HTML
-  let html = escHtml(safe);
-  // Restore <img> tags from placeholders
-  html = html.replace(/ IMG(\d+) /g, (_, i) => imgs[+i]);
-  // Convert ![img](url) markdown syntax
-  html = html.replace(/!\[img\]\(([^)]+)\)/g, '<img src="$1" class="passage-img" loading="lazy" alt="">');
-  // Convert Twine [img[path]] and [img[path][link]] syntax
-  html = html.replace(/\[img\[([^\]]+?)\](?:\[[^\]]*\])?\]/g, '<img src="$1" class="passage-img" loading="lazy" alt="">');
-  // Convert [image: path] syntax
-  html = html.replace(/\[image:\s*\.?\/?([^\]]+)\]/g, '<img src="$1" class="passage-img" loading="lazy" alt="">');
-  // Convert double newlines to paragraph breaks, single to <br>
-  html = html.replace(/
-
-+/g, '</p><p>').replace(/
-/g, '<br>');
+  let text = s;
+  text = text.replace(/<<[^>]*?>>/g, '');
+  text = text.replace(/\[\[([^\]|]*?)(?:\|[^\]]*?)?\]\]/g, '');
+  text = text.replace(/==[^=]*?==/g, '');
+  text = text.replace(/\[OR\]/g, '\n');
+  text = text.replace(/\n{3,}/g, '\n\n').trim();
+  let html = escHtml(text);
+  html = html.replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>');
   return '<p>' + html + '</p>';
 }
 
 function escHtml(s) {
   if (!s) return '';
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// === Group View ===
-function renderGroupView(passages) {
-  const content = document.getElementById('content');
-  content.innerHTML = '';
-  const groups = groupPassages(passages);
+function passageHtml(p) {
+  const title = getPassageTitle(p);
+  const pid = p.pid != null ? '<span class="pid">#' + p.pid + '</span>' : '';
 
-  if (groups.length === 0) {
-    content.innerHTML = '<div class="empty-state">未找到匹配的段落</div>';
-    return;
+  const tags = (p.tags && p.tags.length > 0)
+    ? '<div class="tag-row">' + p.tags.map(t => '<span class="tag ' + tagClass(t) + '">' + escHtml(t) + '</span>').join('') + '</div>'
+    : '';
+
+  const chars = (p.characters && p.characters.length > 0)
+    ? '<div class="char-pills">' + p.characters.map(c => {
+        const color = CHAR_COLORS[c] || '#64748b';
+        return '<span class="char-pill" style="background:' + color + '18;color:' + color + ';border:1px solid ' + color + '33" onclick="filterByChar(\'' + c + '\')">' + c + '</span>';
+      }).join('') + '</div>'
+    : '';
+
+  let condHtml = '';
+  if (showCond) {
+    const conds = extractConditions(p.content || '');
+    if (conds.length > 0) {
+      condHtml = '<div class="tag-row">' + conds.slice(0, 5).map(c =>
+        '<span class="tag tag-cond" title="' + escHtml(c) + '">' + escHtml(c.length > 30 ? c.substring(0,27)+'...' : c) + '</span>'
+      ).join('') + '</div>';
+    }
   }
 
-  let total = 0;
-  groups.forEach(([gName, gPassages]) => {
-    total += gPassages.length;
-    const isOpen = openGroups.has(gName);
-
-    // Find group info
-    const gInfo = (DATA.groups || []).find(g => g.id === gName);
-    const displayName = gInfo ? (gInfo.name_zh || gInfo.name || gName) : gName;
-    const displayNameEn = gInfo && gInfo.name_zh && gInfo.name !== gInfo.name_zh ? gInfo.name : '';
-
-    const header = document.createElement('div');
-    header.className = 'group-header';
-    header.innerHTML = `
-      <span class="group-arrow${isOpen ? ' open' : ''}">▶</span>
-      <div class="group-info">
-        <h2>${escHtml(displayName)}</h2>
-        ${displayNameEn ? `<div class="group-name-en">${escHtml(displayNameEn)}</div>` : ''}
-      </div>
-      <div class="group-stats"><b>${gPassages.length}</b> 段落</div>
-    `;
-
-    const body = document.createElement('div');
-    body.className = 'group-body' + (isOpen ? ' open' : '');
-
-    header.addEventListener('click', () => {
-      const nowOpen = body.classList.toggle('open');
-      header.querySelector('.group-arrow').classList.toggle('open', nowOpen);
-      if (nowOpen) {
-        openGroups.add(gName);
-        if (!body.dataset.rendered) {
-          renderPassageChunked(body, gPassages, 0);
-          body.dataset.rendered = '1';
-        }
-      } else {
-        openGroups.delete(gName);
-      }
-    });
-
-    // Auto-render if was open
-    if (isOpen && !body.dataset.rendered) {
-      renderPassageChunked(body, gPassages, 0);
-      body.dataset.rendered = '1';
+  const TEXT_LIMIT = 5000;
+  let textHtml = '';
+  if (showZh && p.content_zh) {
+    const t = p.content_zh.length > TEXT_LIMIT ? p.content_zh.substring(0, TEXT_LIMIT) : p.content_zh;
+    const trunc = p.content_zh.length > TEXT_LIMIT ? '<div style="color:var(--tag-cond);font-size:11px;margin-top:4px">... \u5167\u5BB9\u904E\u9577\uFF0C\u5DF2\u622A\u65B7</div>' : '';
+    textHtml += '<div class="text">' + formatText(t) + '</div>' + trunc;
+  }
+  if (showEn && p.content) {
+    const t = p.content.length > TEXT_LIMIT ? p.content.substring(0, TEXT_LIMIT) : p.content;
+    const trunc = p.content.length > TEXT_LIMIT ? '<div style="color:var(--tag-cond);font-size:11px;margin-top:4px">... truncated</div>' : '';
+    if (showZh && p.content_zh) {
+      const isLong = t.length > 300;
+      textHtml += '<div class="text-en' + (isLong ? ' collapsed' : '') + '">' + formatText(t) + '</div>' + trunc;
+    } else {
+      textHtml += '<div class="text">' + formatText(t) + '</div>' + trunc;
     }
+  }
+  if (!textHtml) {
+    textHtml = p.content_zh
+      ? '<div class="text">' + formatText(p.content_zh) + '</div>'
+      : p.content
+        ? '<div class="text">' + formatText(p.content) + '</div>'
+        : '<div class="text" style="color:var(--text3)">(\u7121\u5167\u5BB9)</div>';
+  }
 
-    content.appendChild(header);
-    content.appendChild(body);
-  });
+  let choicesHtml = '';
+  if (showChoices) {
+    const choiceMatches = [];
+    const raw = p.content || '';
+    const re = /\[\[([^\]|]+?)(?:\|([^\]]*?))?\]\]/g;
+    let cm;
+    while ((cm = re.exec(raw)) !== null) {
+      const text = cm[1].trim();
+      const target = cm[2] ? cm[2].trim() : text;
+      if (text.length > 0 && text.length < 100 && !/^\$/.test(text)) {
+        choiceMatches.push({ text: text, target: target });
+      }
+    }
+    if (choiceMatches.length > 0) {
+      choicesHtml = '<div class="choices-row">' + choiceMatches.slice(0, 20).map(c =>
+        '<span class="choice-btn" title="-> ' + escHtml(c.target) + '">' + escHtml(c.text) + '</span>'
+      ).join('') + '</div>';
+    }
+  }
+
+  return '<div class="passage">' +
+    '<div class="passage-header"><span class="passage-title">' + escHtml(title) + '</span>' + pid + '</div>' +
+    tags + condHtml + chars + textHtml + choicesHtml +
+  '</div>';
 }
 
-// === Grouping (respects DATA.groups order from JSON) ===
+function renderChunked(container, passages, startIdx) {
+  const end = Math.min(startIdx + CHUNK_SIZE, passages.length);
+  let html = '';
+  for (let i = startIdx; i < end; i++) { html += passageHtml(passages[i]); }
+  container.insertAdjacentHTML('beforeend', html);
+
+  if (end < passages.length) {
+    const sentinel = document.createElement('div');
+    sentinel.className = 'loading';
+    sentinel.style.padding = '16px';
+    sentinel.innerHTML = '<div style="font-size:11px;color:var(--text3)">\u8F09\u5165\u66F4\u591A (' + end + '/' + passages.length + ')...</div>';
+    container.appendChild(sentinel);
+    const obs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { obs.disconnect(); sentinel.remove(); renderChunked(container, passages, end); }
+    });
+    obs.observe(sentinel);
+  }
+}
+
 function groupPassages(passages) {
   const groups = new Map();
   passages.forEach(p => {
-    const g = p.group || '（未分類）';
+    const g = p.group || '(\u672A\u5206\u985E)';
     if (!groups.has(g)) groups.set(g, []);
     groups.get(g).push(p);
   });
-  // Use DATA.groups order if available, otherwise fallback to count-based sort
   if (DATA.groups && DATA.groups.length > 0) {
     const ordered = [];
     const seen = new Set();
     DATA.groups.forEach(gi => {
       const key = gi.id || gi.name;
-      if (groups.has(key)) {
-        ordered.push([key, groups.get(key)]);
-        seen.add(key);
-      }
+      if (groups.has(key)) { ordered.push([key, groups.get(key)]); seen.add(key); }
     });
-    // Append any groups not in DATA.groups
     groups.forEach((v, k) => { if (!seen.has(k)) ordered.push([k, v]); });
     return ordered;
   }
   return Array.from(groups.entries()).sort((a, b) => b[1].length - a[1].length);
 }
 
-// === All View ===
-function renderAllView(passages) {
+function renderNarrativeView(passages) {
   const content = document.getElementById('content');
   content.innerHTML = '';
-  if (passages.length === 0) {
-    content.innerHTML = '<div class="empty-state">未找到匹配的段落</div>';
-    return;
-  }
-  renderPassageChunked(content, passages, 0);
-}
+  const groups = groupPassages(passages);
+  if (groups.length === 0) { content.innerHTML = '<div class="empty-state">\u672A\u627E\u5230\u5339\u914D\u7684\u6BB5\u843D</div>'; return; }
 
-// === Chunked Rendering ===
-function renderPassageChunked(container, passages, startIdx) {
-  const CHUNK = 80;
-  const end = Math.min(startIdx + CHUNK, passages.length);
-  let html = '';
-  for (let i = startIdx; i < end; i++) {
-    html += passageHtml(passages[i], i);
-  }
-  container.insertAdjacentHTML('beforeend', html);
+  groups.forEach(([gName, gPassages]) => {
+    const isOpen = openSections.has('g:' + gName);
+    const iconInfo = GROUP_ICONS[gName] || ['#64748b', gName.substring(0,3).toUpperCase()];
+    const gInfo = (DATA.groups || []).find(g => (g.id || g.name) === gName);
+    const nameZh = gInfo ? (gInfo.name_zh || gInfo.name || gName) : gName;
+    const nameEn = gInfo && gInfo.name !== gInfo.name_zh ? gInfo.name : '';
+    const charCount = new Set(gPassages.flatMap(p => p.characters || [])).size;
 
-  if (end < passages.length) {
-    const sentinel = document.createElement('div');
-    sentinel.className = 'loading';
-    sentinel.style.padding = '20px';
-    sentinel.innerHTML = `<div style="font-size:12px;color:var(--text3)">載入更多 (${end}/${passages.length})...</div>`;
-    container.appendChild(sentinel);
+    const header = document.createElement('div');
+    header.className = 'group-header';
+    header.innerHTML =
+      '<div class="group-icon" style="background:' + iconInfo[0] + '22;color:' + iconInfo[0] + ';font-size:18px">' + iconInfo[1] + '</div>' +
+      '<span class="group-arrow' + (isOpen ? ' open' : '') + '">&#9654;</span>' +
+      '<div class="group-info"><h2>' + escHtml(nameZh) + '</h2>' +
+        (nameEn ? '<div class="group-name-en">' + escHtml(nameEn) + '</div>' : '') +
+      '</div>' +
+      '<div class="group-stats">' +
+        (charCount > 0 ? '<span>' + charCount + ' \u89D2\u8272</span>' : '') +
+        '<span><b>' + gPassages.length + '</b> \u6BB5\u843D</span>' +
+      '</div>';
 
-    const obs = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        obs.disconnect();
-        sentinel.remove();
-        renderPassageChunked(container, passages, end);
-      }
+    const body = document.createElement('div');
+    body.className = 'group-body' + (isOpen ? ' open' : '');
+    header.addEventListener('click', () => {
+      const nowOpen = body.classList.toggle('open');
+      header.querySelector('.group-arrow').classList.toggle('open', nowOpen);
+      if (nowOpen) { openSections.add('g:' + gName); if (!body.dataset.rendered) { renderChunked(body, gPassages, 0); body.dataset.rendered = '1'; } }
+      else { openSections.delete('g:' + gName); }
     });
-    obs.observe(sentinel);
+    if (isOpen && !body.dataset.rendered) { renderChunked(body, gPassages, 0); body.dataset.rendered = '1'; }
+    content.appendChild(header);
+    content.appendChild(body);
+  });
+}
+
+function renderSceneView(passages) {
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+  if (passages.length === 0) { content.innerHTML = '<div class="empty-state">\u672A\u627E\u5230\u5339\u914D\u7684\u6BB5\u843D</div>'; return; }
+
+  const groups = groupPassages(passages);
+  groups.forEach(([gName, gPassages]) => {
+    const iconInfo = GROUP_ICONS[gName] || ['#64748b', gName.substring(0,3).toUpperCase()];
+    const gInfo = (DATA.groups || []).find(g => (g.id || g.name) === gName);
+    const nameZh = gInfo ? (gInfo.name_zh || gInfo.name || gName) : gName;
+    const isOpen = openSections.has('sv:' + gName);
+
+    const charSubs = new Map();
+    gPassages.forEach(p => {
+      const chars = p.characters || [];
+      const key = chars.length > 0 ? chars[0] : '(\u4E00\u822C)';
+      if (!charSubs.has(key)) charSubs.set(key, []);
+      charSubs.get(key).push(p);
+    });
+
+    const header = document.createElement('div');
+    header.className = 'group-header';
+    let gradient = 'linear-gradient(135deg, var(--bg3), var(--bg2))';
+    if (gName.includes('Chapter 1')) gradient = 'linear-gradient(135deg, #1a0820, var(--bg2))';
+    else if (gName.includes('Chapter 2')) gradient = 'linear-gradient(135deg, #1a0808, var(--bg2))';
+    else if (gName.includes('Chapter 5')) gradient = 'linear-gradient(135deg, #0f0820, var(--bg2))';
+    else if (gName.includes('Chapter H')) gradient = 'linear-gradient(135deg, #200808, var(--bg2))';
+    else if (gName.includes('Campfire')) gradient = 'linear-gradient(135deg, #1a1005, var(--bg2))';
+    header.style.background = gradient;
+    header.innerHTML =
+      '<div class="group-icon" style="background:' + iconInfo[0] + '22;color:' + iconInfo[0] + ';font-size:18px">' + iconInfo[1] + '</div>' +
+      '<span class="group-arrow' + (isOpen ? ' open' : '') + '">&#9654;</span>' +
+      '<div class="group-info"><h2>' + escHtml(nameZh) + '</h2>' +
+        '<div class="group-name-en">' + escHtml(gName) + ' &middot; ' + charSubs.size + ' \u5B50\u5834\u666F</div></div>' +
+      '<div class="group-stats"><b>' + gPassages.length + '</b> \u6BB5\u843D</div>';
+
+    const body = document.createElement('div');
+    body.className = 'group-body' + (isOpen ? ' open' : '');
+    header.addEventListener('click', () => {
+      const nowOpen = body.classList.toggle('open');
+      header.querySelector('.group-arrow').classList.toggle('open', nowOpen);
+      if (nowOpen) { openSections.add('sv:' + gName); if (!body.dataset.rendered) { renderSceneSubs(body, charSubs, gName); body.dataset.rendered = '1'; } }
+      else { openSections.delete('sv:' + gName); }
+    });
+    if (isOpen && !body.dataset.rendered) { renderSceneSubs(body, charSubs, gName); body.dataset.rendered = '1'; }
+    content.appendChild(header);
+    content.appendChild(body);
+  });
+}
+
+function renderSceneSubs(container, charSubs, groupName) {
+  const sorted = Array.from(charSubs.entries()).sort((a, b) => {
+    if (a[0] === '(\u4E00\u822C)') return 1;
+    if (b[0] === '(\u4E00\u822C)') return -1;
+    return b[1].length - a[1].length;
+  });
+  sorted.forEach(([charName, subPassages]) => {
+    const secKey = 'ss:' + groupName + ':' + charName;
+    const isOpen = openSections.has(secKey);
+    const color = CHAR_COLORS[charName] || '#64748b';
+    const isGeneral = charName === '(\u4E00\u822C)';
+
+    const sub = document.createElement('div');
+    sub.className = 'char-section';
+    sub.style.margin = '4px 0';
+    sub.innerHTML =
+      '<div class="char-section-header" style="padding:10px 14px">' +
+        '<div class="char-section-avatar" style="background:' + color + ';width:32px;height:32px;font-size:13px">' + (isGeneral ? '?' : charName[0]) + '</div>' +
+        '<div class="char-section-info"><h3 style="font-size:14px">' + (isGeneral ? '\u4E00\u822C\u5834\u666F' : escHtml(charName)) + '</h3>' +
+          '<div class="meta">' + subPassages.length + ' \u6BB5\u843D</div></div>' +
+        '<span class="group-arrow' + (isOpen ? ' open' : '') + '">&#9654;</span></div>';
+
+    const subBody = document.createElement('div');
+    subBody.className = 'char-section-body' + (isOpen ? ' open' : '');
+    sub.querySelector('.char-section-header').addEventListener('click', () => {
+      const nowOpen = subBody.classList.toggle('open');
+      sub.querySelector('.group-arrow').classList.toggle('open', nowOpen);
+      if (nowOpen) { openSections.add(secKey); if (!subBody.dataset.rendered) { renderChunked(subBody, subPassages, 0); subBody.dataset.rendered = '1'; } }
+      else { openSections.delete(secKey); }
+    });
+    if (isOpen && !subBody.dataset.rendered) { renderChunked(subBody, subPassages, 0); subBody.dataset.rendered = '1'; }
+    sub.appendChild(subBody);
+    container.appendChild(sub);
+  });
+}
+
+function renderCharacterView(passages) {
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  const charMap = new Map();
+  passages.forEach(p => { (p.characters || []).forEach(c => { if (!charMap.has(c)) charMap.set(c, []); charMap.get(c).push(p); }); });
+  const noChar = passages.filter(p => !(p.characters && p.characters.length > 0));
+
+  if (charMap.size === 0 && noChar.length === 0) { content.innerHTML = '<div class="empty-state">\u672A\u627E\u5230\u5339\u914D\u7684\u6BB5\u843D</div>'; return; }
+
+  Array.from(charMap.entries()).sort((a, b) => b[1].length - a[1].length).forEach(([charName, charPassages]) => {
+    if (charFilter && charFilter !== charName) return;
+    const isOpen = openSections.has('c:' + charName);
+    const color = CHAR_COLORS[charName] || '#64748b';
+    const groupCounts = {};
+    charPassages.forEach(p => { const g = p.group || 'other'; groupCounts[g] = (groupCounts[g] || 0) + 1; });
+    const gInfo = DATA.groups || [];
+    const groupStr = Object.entries(groupCounts).map(([k,v]) => { const gi = gInfo.find(g => (g.id||g.name) === k); return (gi ? (gi.name_zh || k) : k) + ' ' + v; }).join(' / ');
+
+    const section = document.createElement('div');
+    section.className = 'char-section';
+    section.innerHTML =
+      '<div class="char-section-header">' +
+        '<div class="char-section-avatar" style="background:' + color + '">' + charName[0] + '</div>' +
+        '<div class="char-section-info"><h3>' + escHtml(charName) + '</h3>' +
+          '<div class="meta">' + charPassages.length + ' \u6BB5\u843D | ' + groupStr + '</div></div>' +
+        '<span class="group-arrow' + (isOpen ? ' open' : '') + '">&#9654;</span></div>';
+
+    const body = document.createElement('div');
+    body.className = 'char-section-body' + (isOpen ? ' open' : '');
+    section.querySelector('.char-section-header').addEventListener('click', () => {
+      const nowOpen = body.classList.toggle('open');
+      section.querySelector('.group-arrow').classList.toggle('open', nowOpen);
+      if (nowOpen) { openSections.add('c:' + charName); if (!body.dataset.rendered) { renderChunked(body, charPassages, 0); body.dataset.rendered = '1'; } }
+      else { openSections.delete('c:' + charName); }
+    });
+    if (isOpen && !body.dataset.rendered) { renderChunked(body, charPassages, 0); body.dataset.rendered = '1'; }
+    section.appendChild(body);
+    content.appendChild(section);
+  });
+
+  if (noChar.length > 0 && !charFilter) {
+    const isOpen = openSections.has('c:__none');
+    const section = document.createElement('div');
+    section.className = 'char-section';
+    section.innerHTML =
+      '<div class="char-section-header">' +
+        '<div class="char-section-avatar" style="background:var(--text3)">?</div>' +
+        '<div class="char-section-info"><h3>\u7121\u7279\u5B9A\u89D2\u8272</h3>' +
+          '<div class="meta">' + noChar.length + ' \u6BB5\u843D</div></div>' +
+        '<span class="group-arrow' + (isOpen ? ' open' : '') + '">&#9654;</span></div>';
+    const body = document.createElement('div');
+    body.className = 'char-section-body' + (isOpen ? ' open' : '');
+    section.querySelector('.char-section-header').addEventListener('click', () => {
+      const nowOpen = body.classList.toggle('open');
+      section.querySelector('.group-arrow').classList.toggle('open', nowOpen);
+      if (nowOpen) { openSections.add('c:__none'); if (!body.dataset.rendered) { renderChunked(body, noChar, 0); body.dataset.rendered = '1'; } }
+      else { openSections.delete('c:__none'); }
+    });
+    if (isOpen && !body.dataset.rendered) { renderChunked(body, noChar, 0); body.dataset.rendered = '1'; }
+    section.appendChild(body);
+    content.appendChild(section);
   }
 }
 
-// === Render ===
 function resetAndRender() {
+  document.querySelectorAll('[data-rendered]').forEach(el => { if (!el.classList.contains('open')) el.dataset.rendered = ''; });
   const passages = getFiltered();
-  if (currentView === 'group') {
-    renderGroupView(passages);
-  } else {
-    renderAllView(passages);
+  switch (currentView) {
+    case 'narrative': renderNarrativeView(passages); break;
+    case 'scene': renderSceneView(passages); break;
+    case 'character': renderCharacterView(passages); break;
   }
 }
 
 function setActiveView(view) {
   currentView = view;
+  openSections.clear();
   document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(view === 'group' ? 'viewGroup' : 'viewAll').classList.add('active');
+  document.getElementById(view === 'narrative' ? 'viewNarrative' : view === 'scene' ? 'viewScene' : 'viewChar').classList.add('active');
+  updateFilterBar();
   resetAndRender();
 }
 
-// === Init ===
 function init() {
   renderBanner();
+  updateFilterBar();
 
   let searchTimeout;
-  document.getElementById('searchBox').addEventListener('input', (e) => {
+  document.getElementById('searchBox').addEventListener('input', e => {
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      searchQuery = e.target.value.trim();
-      resetAndRender();
-    }, 300);
+    searchTimeout = setTimeout(() => { searchQuery = e.target.value.trim(); openSections.clear(); resetAndRender(); }, 300);
   });
 
-  document.getElementById('showZh').addEventListener('change', (e) => {
-    showZh = e.target.checked;
-    clearRenderedCache();
-    resetAndRender();
-  });
-  document.getElementById('showEn').addEventListener('change', (e) => {
-    showEn = e.target.checked;
-    clearRenderedCache();
-    resetAndRender();
-  });
-  document.getElementById('showName').addEventListener('change', (e) => {
-    showName = e.target.checked;
-    clearRenderedCache();
-    resetAndRender();
-  });
+  document.getElementById('showZh').addEventListener('change', e => { showZh = e.target.checked; openSections.clear(); resetAndRender(); });
+  document.getElementById('showEn').addEventListener('change', e => { showEn = e.target.checked; openSections.clear(); resetAndRender(); });
+  document.getElementById('showChoices').addEventListener('change', e => { showChoices = e.target.checked; openSections.clear(); resetAndRender(); });
+  document.getElementById('showCond').addEventListener('change', e => { showCond = e.target.checked; openSections.clear(); resetAndRender(); });
 
-  document.getElementById('viewGroup').addEventListener('click', () => setActiveView('group'));
-  document.getElementById('viewAll').addEventListener('click', () => setActiveView('all'));
+  document.getElementById('viewNarrative').addEventListener('click', () => setActiveView('narrative'));
+  document.getElementById('viewScene').addEventListener('click', () => setActiveView('scene'));
+  document.getElementById('viewChar').addEventListener('click', () => setActiveView('character'));
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === '/') { e.preventDefault(); document.getElementById('searchBox').focus(); }
+    if (e.key === '1') setActiveView('narrative');
+    if (e.key === '2') setActiveView('scene');
+    if (e.key === '3') setActiveView('character');
+    if (e.key === 'Escape') { document.getElementById('searchBox').blur(); if (charFilter) { charFilter = null; updateFilterBar(); resetAndRender(); } }
+  });
 
   resetAndRender();
-}
-
-function clearRenderedCache() {
-  openGroups.clear();
-  document.querySelectorAll('.group-body').forEach(div => {
-    div.dataset.rendered = '';
-  });
 }
 
 loadData();
